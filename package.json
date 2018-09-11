@@ -1,0 +1,22 @@
+{
+  "name": "toady-track",
+  "version": "1.0.0",
+  "description": "Tracks network users",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "S Stewart"
+  },
+  "maintainers": [
+    {
+      "name": "spangborn",
+      "email": "sawyer@anesti.org"
+    }
+  ],
+  "directories": {},
+  "dependencies": {
+    "sqlite3": "^4.0.2"
+  }
+}
