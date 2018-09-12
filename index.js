@@ -149,8 +149,7 @@ module.exports = function(config, client, modMan) {
                     "Examples:",
                     " {!}{cmd} user/spangborn"
                 ],
-                targetChannel: false,
-				minPermission: "P"
+                targetChannel: false
             },
 			hostlist: {
 				handler: function(from, to, target, args, inChan) {
@@ -171,8 +170,7 @@ module.exports = function(config, client, modMan) {
 					"Examples:",
 					" {!}{cmd} spangborn"
 				],
-				targetChannel: false,
-				minPermission: "P"
+				targetChannel: false
 			},
             stats: {
                 handler: function(from, to, target, args, inChan) {
@@ -182,8 +180,7 @@ module.exports = function(config, client, modMan) {
                 },
                 desc: "Messages you with the stats",
                 help: [],
-                targetChannel: false,
-				minPermission: "P"
+                targetChannel: false
             },
 			trackdump: {
                 handler: function(from, to, target, args, inChan) {
@@ -197,8 +194,7 @@ module.exports = function(config, client, modMan) {
                 },
                 desc: "Messages you with the stats",
                 help: [],
-                targetChannel: false,
-				minPermission: "P"
+                targetChannel: false
             }
         },
 		unload: function () {
