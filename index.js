@@ -68,16 +68,10 @@ module.exports = function(config, client, modMan) {
 
 		let sql = `SELECT * from track`;
 
-		var data = [];
-
-		db.each(sql, [], (err,row) => {
-			// Row Callback
-			if (err) return console.error(err.message);
-			data.push(row);
-		}, (err,rows) => {
+		db.all(sql, [], (err,rows) => {
 			// Complete Callback
 			if (err) return console.error(err.message);
-			if (typeof callback === "function") callback(data);
+			if (typeof callback === "function") callback(rows);
 		});
 	}
 
