@@ -73,7 +73,7 @@ module.exports = function(config, client, modMan) {
 		db.each(sql, [], (err,row) => {
 			// Row Callback
 			if (err) return console.error(err.message);
-			hosts.push(row);
+			data.push(row);
 		}, (err,rows) => {
 			// Complete Callback
 			if (err) return console.error(err.message);
