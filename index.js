@@ -69,7 +69,6 @@ module.exports = function(config, client, modMan) {
 		let sql = `SELECT * from track`;
 
 		db.all(sql, [], (err,rows) => {
-			// Complete Callback
 			if (err) return console.error(err.message);
 			if (typeof callback === "function") callback(rows);
 		});
@@ -180,7 +179,7 @@ module.exports = function(config, client, modMan) {
                 handler: function(from, to, target, args, inChan) {
 					getAllData(function (data) {
 						client.notice("Sending all tracking data...");
-						for (row in data) {
+						for (i=0; i< data.length; i++) {
 							client.notice(row.track_id + " | " + row.nickname + " | " + row.hostname);
 						}
 						client.notice("End of tracking data.");
