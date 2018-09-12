@@ -119,7 +119,6 @@ module.exports = function(config, client, modMan) {
 
     return {
         name: "track",
-        version: "0.1.0",
         author: "spangborn",
         desc: "Logs user nicks and hostmasks",
         commands: {
