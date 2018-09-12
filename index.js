@@ -32,7 +32,7 @@ module.exports = function(config, client, modMan) {
 					WHERE hostname = ?`;
 
 		var nicks = [];
-		
+
 		db.each(sql, [hostname], (err,row) => {
 			// Row Callback
 			if (err) return console.error(err.message);
@@ -40,7 +40,7 @@ module.exports = function(config, client, modMan) {
 		}, (err,row) => {
 			// Complete callback
 			if (err) return console.error(err.message);
-			callback(nicks);
+			if (typeof callback === "function") callback(nicks);
 		});
 	}
 
@@ -59,12 +59,27 @@ module.exports = function(config, client, modMan) {
 		}, (err,row) => {
 			// Complete callback
 			if (err) return console.error(err.message);
-			callback(hosts);
+			if (typeof callback === "function") callback(hosts);
 		});
-
-
-        return hosts;
     }
+
+	function getAllData(callback) {
+		console.log("Getting all the track data.");
+
+		let sql = `SELECT * from track`;
+
+		var data = [];
+
+		db.each(sql, [], (err,row) => {
+			// Row Callback
+			if (err) return console.error(err.message);
+			hosts.push(row);
+		}, (err,rows) => {
+			// Complete Callback
+			if (err) return console.error(err.message);
+			if (typeof callback === "function") callback(data);
+		});
+	}
 
 	function getStats(callback) {
 		let sql = `SELECT * from track`;
@@ -73,8 +88,8 @@ module.exports = function(config, client, modMan) {
 		var total = 0;
 
 		db.all(sql, [], (err,rows) => {
-			if (err) return console.error(err.message);			
-			callback( result + rows.length );
+			if (err) return console.error(err.message);
+			if (typeof callback === "function") callback (result + rows.length);
 		});
 	}
 
@@ -96,7 +111,7 @@ module.exports = function(config, client, modMan) {
 	function nickHandler(oldnick, newnick, channels, message) {
 		client.whois (newnick, function (info) {
 			console.log("Whois returned: " + info.nick + "!" + info.user + "@" + info.host);
-			addNickHostToDatabase(info.nick, info.host);			
+			addNickHostToDatabase(info.nick, info.host);
 		});
 	}
 	function msgHandler() {}
@@ -142,10 +157,10 @@ module.exports = function(config, client, modMan) {
 					var param = args.length > 0 ? args[0] : "";
 					getHostsForNick(param, function (hosts) {
 						if (hosts.length > 0) {
-          	              	client.say(from, "Hosts for " + param + ": " + hosts);
+          	              	client.notice(from, "Hosts for " + param + ": " + hosts);
 		                }
              	       	else {
-	                        client.say(from, "No hosts for " + args[0]  + " found.");
+	                        client.notice(from, "No hosts for " + args[0]  + " found.");
     		            }
 					});
 
@@ -162,7 +177,22 @@ module.exports = function(config, client, modMan) {
             stats: {
                 handler: function(from, to, target, args, inChan) {
 					getStats(function (stats) {
-						client.say(from, stats);
+						client.notice(from, stats);
+					});
+                },
+                desc: "Messages you with the stats",
+                help: [],
+                targetChannel: false,
+				minPermission: "P"
+            },
+			trackdump: {
+                handler: function(from, to, target, args, inChan) {
+					getAllData(function (data) {
+						client.notice("Sending all tracking data...");
+						for (row in data) {
+							client.notice(row.track_id + " | " + row.nickname + " | " + row.hostname);
+						}
+						client.notice("End of tracking data.");
 					});
                 },
                 desc: "Messages you with the stats",
