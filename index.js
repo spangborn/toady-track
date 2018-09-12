@@ -179,6 +179,7 @@ module.exports = function(config, client, modMan) {
 					getAllData(function (data) {
 						client.notice("Sending all tracking data...");
 						for (i=0; i< data.length; i++) {
+							var row = data[i];
 							client.notice(row.track_id + " | " + row.nickname + " | " + row.hostname);
 						}
 						client.notice("End of tracking data.");
