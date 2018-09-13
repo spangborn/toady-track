@@ -88,7 +88,7 @@ module.exports = function(config, client, modMan) {
 
 	function addNickHostToDatabase(nickname, hostname) {
 
-		console.log("Aadding user to database: " + nickname + " (" + hostname + ")");
+		console.log("Adding user to database: " + nickname + " (" + hostname + ")");
 
 		let updatesql = `INSERT into track (nickname, hostname, seen)
                     VALUES ((?), (?), (?));
@@ -108,14 +108,33 @@ module.exports = function(config, client, modMan) {
 		});
 	}
 	function msgHandler() {}
+
 	function joinHandler(channel, nick, raw) {
+		// If the bot has joined a channel, query the server for all the users in the channel
+		if (nick == client.nick) {
+			console.log("Joined channel, asking for WHO");
+			client.send("WHO", channel);
+		}
 		addNickHostToDatabase(raw.nick, raw.host);
 	}
-	function kickHandler() {}
+
+	function whoHandler(nickname, hostname) {
+		addNickHostToDatabase(nickname, hostname);
+	}
+
+	function rawHandler (message) {
+
+		// WHO response
+		if (message.rawCommand == "352") {
+			whoHandler(message.args[5], message.args[3]);
+		}
+
+	}
 
 	// Attach events to listen for nick changes, joins/parts, messages
 	client.on('nick', nickHandler);
 	client.on('join', joinHandler);
+	client.on('raw', rawHandler);
 
     return {
         name: "track",
@@ -194,6 +213,7 @@ module.exports = function(config, client, modMan) {
 			// unload
 			client.removeListener('nick', nickHandler);
 			client.removeListener('join', joinHandler);
+			client.removeListener('raw', rawHandler);
 
 			db.close((err) => {
 				if (err) {
