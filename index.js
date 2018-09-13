@@ -10,11 +10,11 @@
 module.exports = function(config, client, modMan) {
 	const sqlite3 = require('sqlite3').verbose();
 
-	db = new sqlite3.Database('mods/track/db/track.db', (err) => {
+	db = new sqlite3.Database('mods/track/db/' + config.database, (err) => {
 	    if (err) {
 	        return console.error(err.message);
 	    }
-	    console.log("Connected to track database.");
+	    console.log("Connected to track database: " + config.database);
 	});
 
 	let sql = `CREATE TABLE if not exists track (track_id INTEGER PRIMARY KEY, nickname TEXT NOT NULL, hostname TEXT NOT NULL, seen TEXT NOT NULL, UNIQUE(nickname, hostname) );`
@@ -88,14 +88,11 @@ module.exports = function(config, client, modMan) {
 	}
 
 	function addNickHostToDatabase(nickname, hostname) {
-
-		console.log("Adding user to database: " + nickname + " (" + hostname + ")");
-
-		let updatesql = `INSERT into track (nickname, hostname, seen)
+		let sql = `INSERT into track (nickname, hostname, seen)
                     VALUES ((?), (?), (?));
 					COMMIT;`
 
-		db.run(updatesql, [nickname, hostname, new Date()], function(err) {
+		db.run(sql, [nickname, hostname, new Date()], function(err) {
 		    if (err) return console.error(err.message);
 			console.log("Added " + nickname + " (" + hostname + ") to database.");
 		});
@@ -197,7 +194,7 @@ module.exports = function(config, client, modMan) {
 			latest: {
                 handler: function(from, to, target, args, inChan) {
 					getAllData(function (data) {
-						client.notice("Sending all tracking data...");
+						client.notice(from, "Sending all tracking data...");
 						for (i=0; i< data.length; i++) {
 							var row = data[i];
 							client.notice(from, row.track_id + " | " + row.nickname + " | " + row.hostname);
@@ -222,6 +219,9 @@ module.exports = function(config, client, modMan) {
 				}
 				console.log("Closed the database connection.");
 			});
-		}
+		},
     };
+};
+module.exports.configDefaults = {
+	database: "track.db"
 };
