@@ -66,11 +66,11 @@ module.exports = function(config, client, modMan) {
 	function getAllData(callback) {
 		console.log("Getting all the track data.");
 
-		let sql = `SELECT * from track`;
+		let sql = `SELECT * from track ORDER BY track_id DESC limit 20`;
 
 		db.all(sql, [], (err,rows) => {
 			if (err) return console.error(err.message);
-			if (typeof callback === "function") callback(rows);
+			if (typeof callback === "function") callback (rows);
 		});
 	}
 
@@ -82,6 +82,7 @@ module.exports = function(config, client, modMan) {
 
 		db.all(sql, [], (err,rows) => {
 			if (err) return console.error(err.message);
+
 			if (typeof callback === "function") callback (result + rows.length);
 		});
 	}
@@ -193,13 +194,13 @@ module.exports = function(config, client, modMan) {
                 help: [],
                 targetChannel: false
             },
-			trackdump: {
+			latest: {
                 handler: function(from, to, target, args, inChan) {
 					getAllData(function (data) {
 						client.notice("Sending all tracking data...");
 						for (i=0; i< data.length; i++) {
 							var row = data[i];
-							client.notice(row.track_id + " | " + row.nickname + " | " + row.hostname);
+							client.notice(from, row.track_id + " | " + row.nickname + " | " + row.hostname);
 						}
 						client.notice("End of tracking data.");
 					});
