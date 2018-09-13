@@ -1,11 +1,11 @@
 # Track
 A Toady mod to track nickname and hostname changes on IRC channels
 
-##Install
+## Install
 Install into a [Toady](https://github.com/TomFrost/Toady) instance with:
 
     ./ribbit install track
 
-##Credits
+## Credits
 Track was written by Sawyer Pangborn in 2018.
 
