@@ -27,13 +27,14 @@ module.exports = function(config, client, modMan) {
 
 	function getNicksForHost(hostname, callback) {
 		console.log("Querying database for hostname: " + hostname);
+		let hostname_wildcard = hostname.replace(/\*/g, "%");
 		let sql = `SELECT *
 					FROM track
-					WHERE hostname = ?`;
+					WHERE hostname LIKE ?`;
 
-		var nicks = [];
+		let nicks = [];
 
-		db.each(sql, [hostname], (err,row) => {
+		db.each(sql, [hostname_wildcard], (err,row) => {
 			// Row Callback
 			if (err) return console.error(err.message);
 			nicks.push(row.nickname);
@@ -47,12 +48,13 @@ module.exports = function(config, client, modMan) {
     function getHostsForNick(nickname, callback) {
 		console.log("Querying database for nickname: " + nickname);
 
+		let nickname_wildcard = nickname.replace(/\*/g, "%");
         let sql = `SELECT * FROM track
                     WHERE nickname = ?`;
 
-        var hosts = [];
+        let hosts = [];
 
-		db.each(sql, [nickname], (err,row) => {
+		db.each(sql, [nickname_wildcard], (err,row) => {
 			// Row Callback
 			if (err) return console.error(err.message);
 			hosts.push(row.hostname);
@@ -144,10 +146,10 @@ module.exports = function(config, client, modMan) {
 					var param = args.length > 0 ? args[0] : "";
 					getNicksForHost(param, function (hosts) {
 						if (hosts.length > 0) {
-          	              	client.say(from, "Nicks for " + param + ": " + hosts)
+          	              	client.notice(from, "Nicks for " + param + ": " + hosts)
 	                	}
              	    	else {
-	                		client.say(from, "No nicks for " + param + " found.");
+	                		client.notice(from, "No nicks for " + param + " found.");
     		        	}
 					});
 
