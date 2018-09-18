@@ -50,7 +50,7 @@ module.exports = function(config, client, modMan) {
 
 		let nickname_wildcard = nickname.replace(/\*/g, "%");
         let sql = `SELECT * FROM track
-                    WHERE nickname = ?`;
+                    WHERE nickname LIKE ?`;
 
         let hosts = [];
 
